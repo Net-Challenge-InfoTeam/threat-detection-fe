@@ -19,6 +19,6 @@ Geocode.setLocationType("ROOFTOP");
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <QueryClientProvider client={queryClient}>
-    <App />,
+    <App />
   </QueryClientProvider>,
 );
