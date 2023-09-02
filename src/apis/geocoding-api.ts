@@ -1,4 +1,4 @@
-import axios from "axios";
+import Geocode from "react-geocode";
 
 export const getAddress = async ({
   queryKey,
@@ -7,26 +7,10 @@ export const getAddress = async ({
 }) => {
   const [, { latitude, longitude }] = queryKey;
 
-  const coords = `${longitude},${latitude}`;
-
-  const { data } = await axios.get(
-    `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${coords}&orders=roadaddr&output=json`,
-    {
-      headers: {
-        "X-NCP-APIGW-API-KEY-ID": import.meta.env.VITE_NAVER_API_KEY_ID,
-        "X-NCP-APIGW-API-KEY": import.meta.env.VITE_NAVER_API_KEY,
-      },
-    },
+  const response = await Geocode.fromLatLng(
+    latitude.toString(),
+    longitude.toString(),
   );
 
-  console.log(data);
-
-  const addr =
-    data.results[0].region.area1.name +
-    data.results[0].region.area2.name +
-    data.results[0].region.area3.name +
-    data.results[0].region.area4.name +
-    data.results[0].land.name;
-
-  return addr;
+  return response.results[0].formatted_address;
 };

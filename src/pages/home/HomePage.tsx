@@ -1,12 +1,18 @@
 import { Area, Flex } from "@dohyun-ko/react-atoms";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CameraButton from "src/components/CameraButton";
 import Mapviewer from "src/components/Mapviewer";
 import SafetyIndicator from "src/components/SafetyIndicator";
 import VectorButton from "src/components/VectorButton";
 import { bottomSheetAtom } from "src/store";
 import Safety from "src/types/safety";
+import Threat, {
+  ThreatResponse,
+  threatResponseToThreat,
+} from "src/types/threat";
+import compareSafety, { classifySafety } from "src/utils/compare-safety";
+import fetchJsonData from "src/utils/fetchJson";
 import styled from "styled-components";
 
 interface HomePageProps {}
@@ -14,6 +20,29 @@ interface HomePageProps {}
 const HomePage = ({}: HomePageProps) => {
   const [safety, setSafety] = useState<Safety>(Safety.SAFE);
   const [bottomSheet, setBottomSheet] = useAtom(bottomSheetAtom);
+  const [markers, setMarkers] = useState<Threat[]>([]);
+  const mapViewerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetchJsonData<ThreatResponse[]>("/dummy/dummyLocations.json").then((res) =>
+      setMarkers(res.map(threatResponseToThreat)),
+    );
+  }, []);
+
+  useEffect(() => {
+    const value = markers.reduce(
+      (acc, cur) =>
+        compareSafety(acc, classifySafety(cur)) > 0 ? classifySafety(cur) : acc,
+      Safety.SAFE,
+    );
+
+    setSafety(value);
+  }, [markers]);
+
+  const handleVectorButtonClick = () => {
+    // @ts-ignore
+    mapViewerRef.current?.moveToCurrentLocation();
+  };
 
   return (
     <Area
@@ -25,7 +54,7 @@ const HomePage = ({}: HomePageProps) => {
       backgroundColor={"#F5F5F5"}
     >
       {/* MAPBOX HERE */}
-      <Mapviewer />
+      <Mapviewer markers={markers} ref={mapViewerRef} />
 
       {safety === Safety.THREAT && (
         <>
@@ -39,7 +68,7 @@ const HomePage = ({}: HomePageProps) => {
       </SafetyIndicatorWrapper>
 
       <ActionButtonsWrapper>
-        <VectorButton safety={safety} />
+        <VectorButton safety={safety} onClick={handleVectorButtonClick} />
 
         {location && <CameraButton safety={safety} />}
       </ActionButtonsWrapper>

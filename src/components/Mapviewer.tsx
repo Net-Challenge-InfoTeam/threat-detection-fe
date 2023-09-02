@@ -2,20 +2,24 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import { useAtom } from "jotai";
 import mapboxgl from "mapbox-gl";
-import { useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { createRoot } from "react-dom/client";
+import Icons from "src/assets/Icons";
 import { locationAtom } from "src/store";
-import Threat, {
-  ThreatResponse,
-  threatResponseToThreat,
-} from "src/types/threat";
-import fetchJsonData from "src/utils/fetchJson";
+import Threat from "src/types/threat";
 import styled from "styled-components";
 
 import MarkerGenerator, {
   CautionMarker,
   ThreatMarker,
 } from "./MarkerGenerator";
+import ThreatBottomSheet from "./ThreatBottomSheet";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2Fyb25hMjEiLCJhIjoiY2xsYzNrcmF5MGJyZjNxcW1mNWZsZW9ndSJ9.J4ziCDlgJHdTO-oc6QifMw";
@@ -29,29 +33,44 @@ const MapFrame = styled.div`
   left: 0;
 `;
 
-const Mapviewer = ({}) => {
+interface MapViewerProps {
+  markers: Threat[];
+}
+
+const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
   const mapContainer = useRef<null | HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [lng, setLng] = useState(126.8443);
   const [lat, setLat] = useState(35.228);
   const [zoom, setZoom] = useState(16.52);
 
-  const [markers, setMarkers] = useState<Threat[]>([]);
-
   const [location] = useAtom(locationAtom);
 
-  useEffect(() => {
-    console.log(location);
-    fetchJsonData<ThreatResponse[]>("/dummy/dummyLocations.json").then((res) =>
-      setMarkers(res.map(threatResponseToThreat)),
-    );
-  }, [setMarkers, location]);
+  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+  const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
 
-  const markerClicked = (text: string) => {
-    window.alert(text);
+  const markerClicked = (threat: Threat) => {
+    setSelectedThreat(threat);
+    setBottomSheetOpen(true);
   };
 
   useEffect(() => {
+    const markCurrentLocation = () => {
+      if (!location) return;
+
+      const element = document.createElement("div");
+      createRoot(element).render(<Icons.MyLocation />);
+
+      new mapboxgl.Marker(element)
+        .setLngLat({
+          lon: location.coords.longitude,
+          lat: location.coords.latitude,
+        })
+        .addTo(map.current!);
+    };
+
+    markCurrentLocation();
+
     markers.forEach((marker) => {
       const point = marker.location;
       console.log(point);
@@ -70,7 +89,7 @@ const Mapviewer = ({}) => {
           createRoot(element).render(
             <CautionMarker
               onClick={() => {
-                markerClicked(marker.kind);
+                markerClicked(marker);
               }}
             />,
           );
@@ -79,7 +98,7 @@ const Mapviewer = ({}) => {
           createRoot(element).render(
             <ThreatMarker
               onClick={() => {
-                markerClicked(marker.kind);
+                markerClicked(marker);
               }}
             />,
           );
@@ -88,7 +107,7 @@ const Mapviewer = ({}) => {
           createRoot(element).render(
             <MarkerGenerator
               onClick={() => {
-                markerClicked(marker.kind);
+                markerClicked(marker);
               }}
             />,
           );
@@ -99,7 +118,7 @@ const Mapviewer = ({}) => {
         .setLngLat({ lon: point.longitude, lat: point.latitude })
         .addTo(map.current!);
     });
-  }, [markers]);
+  }, [markers, location]);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -196,11 +215,25 @@ const Mapviewer = ({}) => {
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    moveToCurrentLocation,
+  }));
+
   return (
     <>
       <MapFrame ref={mapContainer} />
+
+      {selectedThreat && (
+        <ThreatBottomSheet
+          threat={selectedThreat}
+          open={bottomSheetOpen}
+          onDismiss={() => setBottomSheetOpen(false)}
+        />
+      )}
     </>
   );
-};
+});
+
+Mapviewer.displayName = "Mapviewer";
 
 export default Mapviewer;

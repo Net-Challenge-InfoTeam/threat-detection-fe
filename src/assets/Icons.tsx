@@ -117,10 +117,30 @@ const Location = ({ size = "20px", color = colorSet.primary }: IconsProps) => {
   );
 };
 
+const MyLocation = () => {
+  return (
+    <svg
+      width="25"
+      height="39"
+      viewBox="0 0 25 39"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="12.5001" cy="12.2955" r="11.3636" fill="#108ED5" />
+      <path
+        d="M12.5 39L1.67469 15.9886L23.3253 15.9886L12.5 39Z"
+        fill="#108ED5"
+      />
+      <circle cx="12.4999" cy="12.2955" r="5.68182" fill="white" />
+    </svg>
+  );
+};
+
 Icons.Safe = Safe;
 Icons.Caution = Caution;
 Icons.Threat = Threat;
 Icons.Camera = Camera;
 Icons.Location = Location;
+Icons.MyLocation = MyLocation;
 
 export default Icons;
