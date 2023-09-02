@@ -10,13 +10,19 @@ export interface ThreatResponse {
 export const threatResponseToThreat = (
   threatResponse: ThreatResponse,
 ): Threat => {
-  const location = threatResponse.location.replace(/[^0-9| ]/g, '"').split(" ");
+  const match = threatResponse.location.match(/POINT\((\d+\.\d+) (\d+\.\d+)\)/);
+
+  if (!match) {
+    throw new Error(`Invalid location: ${threatResponse.location}`);
+  }
+
+  const [, latitude, longitude] = match;
 
   return {
     ...threatResponse,
     location: {
-      latitude: Number(location[0]),
-      longitude: Number(location[1]),
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
     },
     acc: threatResponse.acc.map((acc) => Number(acc.trim())),
     detectedAt: new Date(threatResponse.detectedAt),

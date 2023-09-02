@@ -5,8 +5,11 @@ import mapboxgl from "mapbox-gl";
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { locationAtom } from "src/store";
+import Threat, {
+  ThreatResponse,
+  threatResponseToThreat,
+} from "src/types/threat";
 import fetchJsonData from "src/utils/fetchJson";
-import parsePoint from "src/utils/parsePoint";
 import styled from "styled-components";
 
 import MarkerGenerator, {
@@ -26,15 +29,6 @@ const MapFrame = styled.div`
   left: 0;
 `;
 
-interface Marker {
-  id: number;
-  location: string;
-  kind: string;
-  count: number;
-  acc: string[];
-  detectedAt: string;
-}
-
 const Mapviewer = ({}) => {
   const mapContainer = useRef<null | HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -42,13 +36,15 @@ const Mapviewer = ({}) => {
   const [lat, setLat] = useState(35.228);
   const [zoom, setZoom] = useState(16.52);
 
-  const [markers, setMarkers] = useState<Marker[]>([]);
+  const [markers, setMarkers] = useState<Threat[]>([]);
 
   const [location] = useAtom(locationAtom);
 
   useEffect(() => {
     console.log(location);
-    fetchJsonData<Marker[]>("/dummy/dummyLocations.json").then(setMarkers);
+    fetchJsonData<ThreatResponse[]>("/dummy/dummyLocations.json").then((res) =>
+      setMarkers(res.map(threatResponseToThreat)),
+    );
   }, [setMarkers, location]);
 
   const markerClicked = (text: string) => {
@@ -57,7 +53,8 @@ const Mapviewer = ({}) => {
 
   useEffect(() => {
     markers.forEach((marker) => {
-      const point = parsePoint(marker.location);
+      const point = marker.location;
+      console.log(point);
       if (!point) {
         console.error("Invalid point");
         return;
@@ -102,7 +99,7 @@ const Mapviewer = ({}) => {
         .setLngLat({ lon: point.longitude, lat: point.latitude })
         .addTo(map.current!);
     });
-  });
+  }, [markers]);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -181,7 +178,7 @@ const Mapviewer = ({}) => {
         },
       });
     });
-  });
+  }, [lat, lng, zoom]);
 
   const moveLocation = (longitude: number, latitude: number) => {
     if (map.current) {
