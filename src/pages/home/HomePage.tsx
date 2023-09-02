@@ -2,9 +2,9 @@ import { Area, Flex } from "@dohyun-ko/react-atoms";
 import { useAtom } from "jotai";
 import { useState } from "react";
 import CameraButton from "src/components/CameraButton";
+import Mapviewer from "src/components/Mapviewer";
 import SafetyIndicator from "src/components/SafetyIndicator";
 import VectorButton from "src/components/VectorButton";
-import useGPS from "src/hooks/useGPS";
 import { bottomSheetAtom } from "src/store";
 import Safety from "src/types/safety";
 import styled from "styled-components";
@@ -12,7 +12,6 @@ import styled from "styled-components";
 interface HomePageProps {}
 
 const HomePage = ({}: HomePageProps) => {
-  const { location } = useGPS(); // location은 GeolocationPosition 타입임 위치 바뀔 때마다 실시간으로 업데이트 되는 거 같음
   const [safety, setSafety] = useState<Safety>(Safety.SAFE);
   const [bottomSheet, setBottomSheet] = useAtom(bottomSheetAtom);
 
@@ -21,10 +20,12 @@ const HomePage = ({}: HomePageProps) => {
       style={{
         height: "100vh",
         position: "relative",
+        overflow: "hidden",
       }}
       backgroundColor={"#F5F5F5"}
     >
       {/* MAPBOX HERE */}
+      <Mapviewer />
 
       {safety === Safety.THREAT && (
         <>
@@ -50,6 +51,8 @@ const SafetyIndicatorWrapper = styled(Flex)`
   position: absolute;
   top: 15px;
   left: 15px;
+
+  z-index: 1;
 `;
 
 const ActionButtonsWrapper = styled(Flex)`
@@ -57,6 +60,8 @@ const ActionButtonsWrapper = styled(Flex)`
   bottom: 44px;
   left: calc(50% - 88px);
   gap: 16px;
+
+  z-index: 1;
 `;
 
 const ThreatBlurLeft = styled.div`
@@ -70,6 +75,8 @@ const ThreatBlurLeft = styled.div`
     rgba(217, 77, 33, 15%) 0%,
     rgba(217, 77, 33, 0) 100%
   );
+
+  z-index: 1;
 `;
 
 const ThreatBlurRight = styled.div`
@@ -83,6 +90,8 @@ const ThreatBlurRight = styled.div`
     rgba(217, 77, 33, 15%) 0%,
     rgba(217, 77, 33, 0) 100%
   );
+
+  z-index: 1;
 `;
 
 export default HomePage;

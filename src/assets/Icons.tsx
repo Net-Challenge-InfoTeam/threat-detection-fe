@@ -100,7 +100,7 @@ const Camera = ({ size = "44px", color = "white" }: IconsProps) => {
   );
 };
 
-const Vector = ({ size = "20px", color = colorSet.primary }: IconsProps) => {
+const Location = ({ size = "20px", color = colorSet.primary }: IconsProps) => {
   return (
     <svg
       width={size}
@@ -121,6 +121,6 @@ Icons.Safe = Safe;
 Icons.Caution = Caution;
 Icons.Threat = Threat;
 Icons.Camera = Camera;
-Icons.Vector = Vector;
+Icons.Location = Location;
 
 export default Icons;
