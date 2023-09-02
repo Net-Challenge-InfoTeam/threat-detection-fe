@@ -10,6 +10,7 @@ import ImageReportBottomSheet from "./ImageReportBottomSheet";
 
 interface CameraButtonProps {
   safety: Safety;
+  location: GeolocationPosition;
 }
 
 const getCircleColor = (safety: Safety) => {
@@ -25,10 +26,11 @@ const getCircleColor = (safety: Safety) => {
   }
 };
 
-const CameraButton = ({ safety }: CameraButtonProps) => {
+const CameraButton = ({ safety, location }: CameraButtonProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [capturedImage, setCapturedImage] = useState<File>();
+  const [capturedAt, setCapturedAt] = useState<Date>();
 
   const onCameraButtonClick = () => {
     if (inputRef.current) {
@@ -48,6 +50,7 @@ const CameraButton = ({ safety }: CameraButtonProps) => {
     if (!file) return;
 
     setCapturedImage(file);
+    setCapturedAt(new Date());
     setBottomSheetOpen(true);
   };
 
@@ -68,11 +71,14 @@ const CameraButton = ({ safety }: CameraButtonProps) => {
           }}
           onChange={handleFileChange}
         />
-        {capturedImage && (
+        {capturedImage && capturedAt && (
           <ImageReportBottomSheet
             image={capturedImage}
             open={bottomSheetOpen}
             onDismiss={() => setBottomSheetOpen(false)}
+            latitude={location.coords.latitude}
+            longitude={location.coords.longitude}
+            capturedAt={capturedAt}
           />
         )}
       </Button>
