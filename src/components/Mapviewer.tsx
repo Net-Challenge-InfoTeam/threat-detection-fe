@@ -1,11 +1,10 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { create } from "domain";
+import { useAtom } from "jotai";
 import mapboxgl from "mapbox-gl";
-import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import useGPS from "src/hooks/useGPS";
+import { locationAtom } from "src/store";
 import fetchJsonData from "src/utils/fetchJson";
 import parsePoint from "src/utils/parsePoint";
 import styled from "styled-components";
@@ -45,7 +44,7 @@ const Mapviewer = ({}) => {
 
   const [markers, setMarkers] = useState<Marker[]>([]);
 
-  const { location, error } = useGPS();
+  const [location] = useAtom(locationAtom);
 
   useEffect(() => {
     console.log(location);

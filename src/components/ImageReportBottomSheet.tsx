@@ -8,11 +8,13 @@ import {
   Text,
 } from "@dohyun-ko/react-atoms";
 import { useMutation } from "@tanstack/react-query";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { BottomSheet } from "react-spring-bottom-sheet";
 import { toast } from "react-toastify";
 import { postReport } from "src/apis/threat-api";
 import Icons from "src/assets/Icons";
+import { locationAtom } from "src/store";
 import colorSet from "src/styles/colorSet";
 import Fonts from "src/styles/fonts";
 
@@ -20,8 +22,6 @@ interface ImageReportBottomSheetProps {
   image: File;
   open: boolean;
   onDismiss?: () => void;
-  latitude: number;
-  longitude: number;
   capturedAt: Date;
 }
 
@@ -29,12 +29,13 @@ const ImageReportBottomSheet = ({
   image,
   open,
   onDismiss,
-  latitude,
-  longitude,
   capturedAt,
 }: ImageReportBottomSheetProps) => {
   const [isThreat, setIsThreat] = useState(false);
   const [description, setDescription] = useState("");
+  const [location] = useAtom(locationAtom);
+
+  const { latitude, longitude } = location?.coords || {};
 
   const report = useMutation(postReport, {
     onSuccess: () => {
@@ -63,8 +64,8 @@ const ImageReportBottomSheet = ({
 
     report.mutate({
       image,
-      latitude,
-      longitude,
+      latitude: latitude || 0,
+      longitude: longitude || 0,
       capturedAt,
     });
   };

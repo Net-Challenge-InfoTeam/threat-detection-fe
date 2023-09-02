@@ -1,7 +1,9 @@
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { locationAtom } from "src/store";
 
 const useGPS = () => {
-  const [location, setLocation] = useState<GeolocationPosition>();
+  const [location, setLocation] = useAtom(locationAtom);
   const [error, setError] = useState<GeolocationPositionError>();
 
   useEffect(() => {
