@@ -5,6 +5,7 @@ import Safety from "src/types/safety";
 
 interface VectorButtonProps {
   safety: Safety;
+  onClick?: () => void;
 }
 
 const getIconColor = (safety: Safety) => {
@@ -20,13 +21,11 @@ const getIconColor = (safety: Safety) => {
   }
 };
 
-const VectorButton = ({ safety }: VectorButtonProps) => {
-  const onVectorButtonClick = () => {};
-
+const VectorButton = ({ safety, onClick }: VectorButtonProps) => {
   return (
-    <Button onClick={onVectorButtonClick}>
+    <Button onClick={onClick}>
       <Circle diameter={"40px"} backgroundColor={colorSet.white}>
-        <Icons.Vector color={getIconColor(safety)} />
+        <Icons.Location color={getIconColor(safety)} />
       </Circle>
     </Button>
   );

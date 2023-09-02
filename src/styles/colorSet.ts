@@ -15,4 +15,5 @@ const colorSet = {
 
   secondaryText: "#888888",
 };
+
 export default colorSet;
