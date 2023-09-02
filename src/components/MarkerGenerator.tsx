@@ -26,6 +26,7 @@ const MarkerGenerator = ({
       onClick={markerOnClick}
       style={{
         position: "relative",
+        bottom: "24px",
       }}
     >
       {/* icon */}

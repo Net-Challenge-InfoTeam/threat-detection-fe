@@ -36,11 +36,13 @@ const ThreatBottomSheet = ({
     <BottomSheet open={open} onDismiss={onDismiss}>
       <Area>
         <Content>
+          <Spacer height="8px" />
+
           <Text size={"12px"} color={colorSet.secondaryText}>
             {threat.detectedAt.toLocaleString("ko-KR")}
           </Text>
 
-          <Spacer height="8px" />
+          <Spacer height="4px" />
 
           <Text size={"20px"} font={Fonts.Bold}>
             {data}
@@ -63,6 +65,8 @@ const ThreatBottomSheet = ({
               text={threat.kind}
             />
           </Flex>
+
+          <Spacer height="20px" />
         </Content>
       </Area>
     </BottomSheet>

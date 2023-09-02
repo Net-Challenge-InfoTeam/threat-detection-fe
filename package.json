@@ -12,6 +12,7 @@
   "dependencies": {
     "@dohyun-ko/react-atoms": "^0.1.17",
     "@tanstack/react-query": "^4.33.0",
+    "@types/react-geocode": "^0.2.1",
     "axios": "^1.5.0",
     "i18next": "^23.2.8",
     "i18next-browser-languagedetector": "^7.0.1",
@@ -20,6 +21,7 @@
     "prettier": "^2.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-geocode": "^0.2.3",
     "react-i18next": "^13.0.1",
     "react-router-dom": "^6.15.0",
     "react-spring-bottom-sheet": "^3.4.1",

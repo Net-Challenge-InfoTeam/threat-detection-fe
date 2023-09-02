@@ -2411,6 +2411,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-geocode@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@types/react-geocode@npm:0.2.1"
+  checksum: a39db4624230ebd85bb91081ddf5c47aa1bde08371d016612cfa618394ab61724f85922ebbdeb9ef0406977d16342037525160e8e54acda4fa62220a6c3fa6f4
+  languageName: node
+  linkType: hard
+
 "@types/react@npm:*, @types/react@npm:^18.0.26":
   version: 18.2.21
   resolution: "@types/react@npm:18.2.21"
@@ -6281,6 +6288,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-geocode@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "react-geocode@npm:0.2.3"
+  dependencies:
+    regenerator-runtime: ^0.13.3
+  checksum: b49ab3125c24ff02b7b3f6146e50b0fc3584bf25d20b8f3021584c51c3843e32542dd8f221701fdfc524e61869862b36121f5784b2414c52cfae6129ccfa6f47
+  languageName: node
+  linkType: hard
+
 "react-i18next@npm:^13.0.1":
   version: 13.2.1
   resolution: "react-i18next@npm:13.2.1"
@@ -6445,6 +6461,13 @@ __metadata:
   version: 1.4.2
   resolution: "regenerate@npm:1.4.2"
   checksum: 3317a09b2f802da8db09aa276e469b57a6c0dd818347e05b8862959c6193408242f150db5de83c12c3fa99091ad95fb42a6db2c3329bfaa12a0ea4cbbeb30cb0
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@npm:^0.13.3":
+  version: 0.13.11
+  resolution: "regenerator-runtime@npm:0.13.11"
+  checksum: 27481628d22a1c4e3ff551096a683b424242a216fee44685467307f14d58020af1e19660bf2e26064de946bad7eff28950eae9f8209d55723e2d9351e632bbb4
   languageName: node
   linkType: hard
 
@@ -6707,6 +6730,7 @@ __metadata:
     "@types/prettier": ^2
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.9
+    "@types/react-geocode": ^0.2.1
     "@types/styled-components": ^5
     "@typescript-eslint/eslint-plugin": ^5.47.1
     "@typescript-eslint/parser": ^5.47.1
@@ -6726,6 +6750,7 @@ __metadata:
     prettier: ^2.8.1
     react: ^18.2.0
     react-dom: ^18.2.0
+    react-geocode: ^0.2.3
     react-i18next: ^13.0.1
     react-router-dom: ^6.15.0
     react-spring-bottom-sheet: ^3.4.1
