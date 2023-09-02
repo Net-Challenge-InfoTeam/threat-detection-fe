@@ -40,7 +40,7 @@ const HomePage = ({}: HomePageProps) => {
       <ActionButtonsWrapper>
         <VectorButton safety={safety} />
 
-        <CameraButton safety={safety} />
+        {location && <CameraButton safety={safety} location={location} />}
       </ActionButtonsWrapper>
     </Area>
   );

@@ -1,0 +1,7 @@
+enum QueryKeys {
+  GET_ALL_THREATS = "GET_ALL_THREATS",
+  GET_NEARBY_THREATS = "GET_NEARBY_THREATS",
+  GET_ADDRESS = "GET_ADDRESS",
+}
+
+export default QueryKeys;
