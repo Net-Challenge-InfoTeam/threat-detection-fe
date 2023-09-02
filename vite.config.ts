@@ -45,6 +45,38 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
+      manifest: {
+        name: "Threat Map",
+        short_name: "Threat Map",
+        description: "Threat Map",
+        theme_color: "#6EAA2D",
+        icons: [
+          {
+            src: "manifest-icon-192.maskable.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "manifest-icon-192.maskable.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable",
+          },
+          {
+            src: "manifest-icon-512.maskable.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "manifest-icon-512.maskable.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
+        ],
+      },
     }),
   ],
 });

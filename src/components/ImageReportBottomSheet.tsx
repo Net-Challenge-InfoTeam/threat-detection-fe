@@ -7,8 +7,11 @@ import {
   Spacer,
   Text,
 } from "@dohyun-ko/react-atoms";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { BottomSheet } from "react-spring-bottom-sheet";
+import { toast } from "react-toastify";
+import { postReport } from "src/apis/threat-api";
 import Icons from "src/assets/Icons";
 import colorSet from "src/styles/colorSet";
 import Fonts from "src/styles/fonts";
@@ -17,15 +20,29 @@ interface ImageReportBottomSheetProps {
   image: File;
   open: boolean;
   onDismiss?: () => void;
+  latitude: number;
+  longitude: number;
+  capturedAt: Date;
 }
 
 const ImageReportBottomSheet = ({
   image,
   open,
   onDismiss,
+  latitude,
+  longitude,
+  capturedAt,
 }: ImageReportBottomSheetProps) => {
   const [isThreat, setIsThreat] = useState(false);
   const [description, setDescription] = useState("");
+
+  const report = useMutation(postReport, {
+    onSuccess: () => {
+      toast.success("성공적으로 제출되었습니다.");
+
+      onDismiss && onDismiss();
+    },
+  });
 
   useEffect(() => {
     return () => {
@@ -33,7 +50,24 @@ const ImageReportBottomSheet = ({
     };
   }, [image]);
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    if (!image) {
+      toast.error("이미지가 없습니다.");
+      return;
+    }
+
+    if (!description) {
+      toast.error("설명을 입력해주세요.");
+      return;
+    }
+
+    report.mutate({
+      image,
+      latitude,
+      longitude,
+      capturedAt,
+    });
+  };
 
   return (
     <BottomSheet open={open}>

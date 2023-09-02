@@ -10,6 +10,8 @@ const colorSet = {
   threatBg: "#FFC1B4",
   caution: "#FFCC00",
   cautionBg: "#F4C200",
+  cautionLightBg: "#FFE57E",
+  cautionText: "#856A00",
 
   deselected: "#ECECEC",
 
