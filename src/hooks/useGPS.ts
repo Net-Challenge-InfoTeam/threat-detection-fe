@@ -7,13 +7,17 @@ const useGPS = () => {
   const [error, setError] = useState<GeolocationPositionError>();
 
   useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
+    const watchId = navigator.geolocation.getCurrentPosition(
       (position) => setLocation(position),
       (error) => setError(error),
+      {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+      },
     );
 
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
+    return () => {};
+  }, [setLocation]);
 
   return { location, error };
 };
