@@ -12,6 +12,7 @@ import {
 import { createRoot } from "react-dom/client";
 import Icons from "src/assets/Icons";
 import { locationAtom } from "src/store";
+import colorSet from "src/styles/colorSet";
 import Threat from "src/types/threat";
 import styled from "styled-components";
 
@@ -143,57 +144,92 @@ const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
     }
 
     map.current.on("style.load", () => {
-      const layers = map.current!.getStyle().layers;
-      const labelLayerId = layers!.find(
-        (layer) => layer.type === "symbol" && layer.layout!["text-field"],
-      )!.id;
+      console.log("style loaded");
 
-      map.current!.addLayer(
-        {
-          id: "add-3d-buildings",
-          source: "composite",
-          "source-layer": "building",
-          filter: ["==", "extrude", "true"],
-          type: "fill-extrusion",
-          minzoom: 15,
-          paint: {
-            "fill-extrusion-color": "#aaa",
-            "fill-extrusion-height": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              15,
-              0,
-              15.05,
-              ["get", "height"],
-            ],
-            "fill-extrusion-base": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              15,
-              0,
-              15.05,
-              ["get", "min_height"],
-            ],
-            "fill-extrusion-opacity": 0.6,
-          },
-        },
-        labelLayerId,
+      const layers = map.current!.getStyle().layers;
+      // const labelLayerId = layers!.find(
+      //   (layer) => layer.type === "symbol" && layer.layout!["text-field"],
+      // )!.id;
+
+      // map.current!.addLayer(
+      //   {
+      //     id: "add-3d-buildings",
+      //     source: "composite",
+      //     "source-layer": "building",
+      //     filter: ["==", "extrude", "true"],
+      //     type: "fill-extrusion",
+      //     minzoom: 15,
+      //     paint: {
+      //       "fill-extrusion-color": "#aaa",
+      //       "fill-extrusion-height": [
+      //         "interpolate",
+      //         ["linear"],
+      //         ["zoom"],
+      //         15,
+      //         0,
+      //         15.05,
+      //         ["get", "height"],
+      //       ],
+      //       "fill-extrusion-base": [
+      //         "interpolate",
+      //         ["linear"],
+      //         ["zoom"],
+      //         15,
+      //         0,
+      //         15.05,
+      //         ["get", "min_height"],
+      //       ],
+      //       "fill-extrusion-opacity": 0.6,
+      //     },
+      //   },
+      //   labelLayerId,
+      // );
+
+      // // Add a symbol layer
+      // // map.current!.addLayer({
+      // //   id: "points",
+      // //   type: "symbol",
+      // //   source: "points",
+      // //   layout: {
+      // //     "icon-image": "custom-marker",
+      // //     // get the title name from the source's "title" property
+      // //     "text-field": ["get", "title"],
+      // //     "text-font": ["Pretendard"],
+      // //     "text-offset": [0, 1.25],
+      // //     "text-anchor": "top",
+      // //   },
+      // // });
+
+      map.current!.addSource(
+        "cautionAreaSourc1",
+        // @ts-ignore
+        createGeoJSONCircle([126.8475, 35.2295], 0.2),
+      );
+      map.current!.addSource(
+        "cautionAreaSourc2",
+        // @ts-ignore
+        createGeoJSONCircle([126.8432, 35.2333], 0.2),
       );
 
-      // Add a symbol layer
       map.current!.addLayer({
-        id: "points",
-        type: "symbol",
-        source: "points",
-        layout: {
-          "icon-image": "custom-marker",
-          // get the title name from the source's "title" property
-          "text-field": ["get", "title"],
-          "text-font": ["Pretendard"],
-          "text-offset": [0, 1.25],
-          "text-anchor": "top",
+        id: "cautionArea1",
+        type: "fill",
+        source: "cautionAreaSourc1",
+        layout: {},
+        paint: {
+          "fill-color": colorSet.threat,
+          "fill-opacity": 0.3,
+        },
+      });
+
+      map.current!.addLayer({
+        id: "cautionArea2",
+        type: "fill",
+        source: "cautionAreaSourc2",
+        layout: {},
+        paint: {
+          "fill-color": colorSet.caution,
+          "fill-opacity": 0.3,
         },
       });
     });
@@ -237,3 +273,48 @@ const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
 Mapviewer.displayName = "Mapviewer";
 
 export default Mapviewer;
+
+const createGeoJSONCircle = function (
+  center: [number, number],
+  radiusInKm: number,
+  points = 64,
+) {
+  if (!points) points = 64;
+
+  const coords = {
+    latitude: center[1],
+    longitude: center[0],
+  };
+
+  const km = radiusInKm;
+
+  const ret = [];
+  const distanceX = km / (111.32 * Math.cos((coords.latitude * Math.PI) / 180));
+  const distanceY = km / 110.574;
+
+  let theta, x, y;
+  for (let i = 0; i < points; i++) {
+    theta = (i / points) * (2 * Math.PI);
+    x = distanceX * Math.cos(theta);
+    y = distanceY * Math.sin(theta);
+
+    ret.push([coords.longitude + x, coords.latitude + y]);
+  }
+  ret.push(ret[0]);
+
+  return {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [ret],
+          },
+        },
+      ],
+    },
+  };
+};
