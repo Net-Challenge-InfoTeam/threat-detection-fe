@@ -7,7 +7,7 @@ import {
   Spacer,
   Text,
 } from "@dohyun-ko/react-atoms";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { BottomSheet } from "react-spring-bottom-sheet";
@@ -17,6 +17,7 @@ import Icons from "src/assets/Icons";
 import { locationAtom } from "src/store";
 import colorSet from "src/styles/colorSet";
 import Fonts from "src/styles/fonts";
+import QueryKeys from "src/types/queryKeys";
 
 interface ImageReportBottomSheetProps {
   image: File;
@@ -37,9 +38,13 @@ const ImageReportBottomSheet = ({
 
   const { latitude, longitude } = location?.coords || {};
 
+  const queryClient = useQueryClient();
+
   const report = useMutation(postReport, {
     onSuccess: () => {
       toast.success("성공적으로 제출되었습니다.");
+
+      queryClient.invalidateQueries([QueryKeys.GET_ALL_THREATS]);
 
       onDismiss && onDismiss();
     },
