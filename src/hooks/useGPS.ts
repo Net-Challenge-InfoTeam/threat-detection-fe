@@ -8,7 +8,10 @@ const useGPS = () => {
 
   useEffect(() => {
     const watchId = navigator.geolocation.getCurrentPosition(
-      (position) => setLocation(position),
+      (position) => {
+        console.log("watchId", position);
+        setLocation(position);
+      },
       (error) => setError(error),
       {
         enableHighAccuracy: true,

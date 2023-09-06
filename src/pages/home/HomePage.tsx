@@ -1,45 +1,37 @@
 import { Area, Flex } from "@dohyun-ko/react-atoms";
-import { useAtom } from "jotai";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
+import { getAllThreats } from "src/apis/threat-api";
 import CameraButton from "src/components/CameraButton";
 import Mapviewer from "src/components/Mapviewer";
 import SafetyIndicator from "src/components/SafetyIndicator";
 import VectorButton from "src/components/VectorButton";
-import { bottomSheetAtom } from "src/store";
+import QueryKeys from "src/types/queryKeys";
 import Safety from "src/types/safety";
-import Threat, {
-  ThreatResponse,
-  threatResponseToThreat,
-} from "src/types/threat";
 import compareSafety, { classifySafety } from "src/utils/compare-safety";
-import fetchJsonData from "src/utils/fetchJson";
 import styled from "styled-components";
 
 interface HomePageProps {}
 
 const HomePage = ({}: HomePageProps) => {
   const [safety, setSafety] = useState<Safety>(Safety.SAFE);
-  const [bottomSheet, setBottomSheet] = useAtom(bottomSheetAtom);
-  const [markers, setMarkers] = useState<Threat[]>([]);
   const mapViewerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    fetchJsonData<ThreatResponse[]>("/dummy/dummyLocations.json").then((res) =>
-      setMarkers(res.map(threatResponseToThreat)),
-    );
-  }, []);
+  const { data } = useQuery([QueryKeys.GET_ALL_THREATS], getAllThreats);
 
   useEffect(() => {
-    const value = markers.reduce(
+    if (!data) return;
+    const value = data.reduce(
       (acc, cur) =>
         compareSafety(acc, classifySafety(cur)) > 0 ? classifySafety(cur) : acc,
       Safety.SAFE,
     );
 
     setSafety(value);
-  }, [markers]);
+  }, [data]);
 
   const handleVectorButtonClick = () => {
+    console.log("handle vector button click");
     // @ts-ignore
     mapViewerRef.current?.moveToCurrentLocation();
   };
@@ -54,8 +46,7 @@ const HomePage = ({}: HomePageProps) => {
       backgroundColor={"#F5F5F5"}
     >
       {/* MAPBOX HERE */}
-      <Mapviewer markers={markers} ref={mapViewerRef} />
-
+      {data && <Mapviewer threats={data} ref={mapViewerRef} />}
       {safety === Safety.THREAT && (
         <>
           <ThreatBlurLeft />

@@ -16,7 +16,7 @@ export const threatResponseToThreat = (
     throw new Error(`Invalid location: ${threatResponse.location}`);
   }
 
-  const [, latitude, longitude] = match;
+  const [, longitude, latitude] = match;
 
   return {
     ...threatResponse,
