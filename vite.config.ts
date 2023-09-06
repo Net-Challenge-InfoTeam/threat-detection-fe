@@ -11,7 +11,7 @@ export default defineConfig({
     outDir: "build",
   },
   server: {
-    open: true, //개발 서버를 실행할 때 브라우저를 자동으로 엽니다.
+    open: false, //개발 서버를 실행할 때 브라우저를 자동으로 엽니다.
     port: 3000, //3000번 포트로 개발 서버를 실행합니다.
     proxy: {
       //CORS 방지를 위한 프록시 설정입니다.
