@@ -12,7 +12,6 @@ import {
 import { createRoot } from "react-dom/client";
 import Icons from "src/assets/Icons";
 import { locationAtom } from "src/store";
-import colorSet from "src/styles/colorSet";
 import Threat from "src/types/threat";
 import styled from "styled-components";
 
@@ -25,6 +24,19 @@ import ThreatBottomSheet from "./ThreatBottomSheet";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2Fyb25hMjEiLCJhIjoiY2xsYzNrcmF5MGJyZjNxcW1mNWZsZW9ndSJ9.J4ziCDlgJHdTO-oc6QifMw";
 
+const sourcdIds = [
+  "threatSource0",
+  "threatSource1",
+  "threatSource2",
+  "threatSource3",
+  "threatSource4",
+  "threatSource5",
+  "threatSource6",
+  "threatSource7",
+  "threatSource8",
+  "threatSource9",
+];
+
 const MapFrame = styled.div`
   position: absolute;
   height: 100vh;
@@ -35,10 +47,10 @@ const MapFrame = styled.div`
 `;
 
 interface MapViewerProps {
-  markers: Threat[];
+  threats: Threat[];
 }
 
-const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
+const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
   const mapContainer = useRef<null | HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [lng, setLng] = useState(126.8443);
@@ -50,12 +62,20 @@ const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
 
+  const [currentMarkers, setCurrentMarkers] = useState<
+    {
+      id: number;
+      marker: mapboxgl.Marker;
+    }[]
+  >([]);
+
   const markerClicked = (threat: Threat) => {
     setSelectedThreat(threat);
     setBottomSheetOpen(true);
   };
 
   useEffect(() => {
+    console.log("mark current location");
     const markCurrentLocation = () => {
       if (!location) return;
 
@@ -71,8 +91,33 @@ const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
     };
 
     markCurrentLocation();
+  }, [location]);
 
-    markers.forEach((marker) => {
+  useEffect(() => {
+    // currentMarkers.filter((marker) => {
+    //   const found = threats.find((t) => t.id === marker.id);
+    //   if (!found) {
+    //     marker.marker.remove();
+    //     return false;
+    //   }
+    //   return true;
+    // });
+
+    currentMarkers.forEach((marker) => {
+      marker.marker.remove();
+    });
+
+    if (!map.current) {
+      console.error("map.current is null");
+      return;
+    }
+
+    const newMarkers: {
+      id: number;
+      marker: mapboxgl.Marker;
+    }[] = [];
+
+    threats.forEach((marker) => {
       const point = marker.location;
       console.log(point);
       if (!point) {
@@ -115,13 +160,24 @@ const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
           break;
       }
 
-      new mapboxgl.Marker(element)
+      if (!map.current) {
+        console.error("map.current is null", marker.id);
+        return;
+      }
+
+      const newMark = new mapboxgl.Marker(element)
         .setLngLat({ lon: point.longitude, lat: point.latitude })
         .addTo(map.current!);
+
+      newMarkers.push({ id: marker.id, marker: newMark });
     });
-  }, [markers, location]);
+
+    setCurrentMarkers(newMarkers);
+  }, [threats, location]);
 
   useEffect(() => {
+    console.log("second useEffect");
+
     if (map.current) return; // initialize map only once
     if (!mapContainer.current) return;
 
@@ -143,97 +199,43 @@ const Mapviewer = forwardRef(({ markers }: MapViewerProps, ref) => {
       });
     }
 
-    map.current.on("style.load", () => {
-      console.log("style loaded");
+    // map.current.on("style.load", () => {
+    //   console.log("style loaded");
 
-      const layers = map.current!.getStyle().layers;
-      // const labelLayerId = layers!.find(
-      //   (layer) => layer.type === "symbol" && layer.layout!["text-field"],
-      // )!.id;
+    //   map.current!.addSource(
+    //     "cautionAreaSourc1",
+    //     // @ts-ignore
+    //     createGeoJSONCircle([126.8475, 35.2295], 0.2),
+    //   );
+    //   map.current!.addSource(
+    //     "cautionAreaSourc2",
+    //     // @ts-ignore
+    //     createGeoJSONCircle([126.8432, 35.2333], 0.2),
+    //   );
 
-      // map.current!.addLayer(
-      //   {
-      //     id: "add-3d-buildings",
-      //     source: "composite",
-      //     "source-layer": "building",
-      //     filter: ["==", "extrude", "true"],
-      //     type: "fill-extrusion",
-      //     minzoom: 15,
-      //     paint: {
-      //       "fill-extrusion-color": "#aaa",
-      //       "fill-extrusion-height": [
-      //         "interpolate",
-      //         ["linear"],
-      //         ["zoom"],
-      //         15,
-      //         0,
-      //         15.05,
-      //         ["get", "height"],
-      //       ],
-      //       "fill-extrusion-base": [
-      //         "interpolate",
-      //         ["linear"],
-      //         ["zoom"],
-      //         15,
-      //         0,
-      //         15.05,
-      //         ["get", "min_height"],
-      //       ],
-      //       "fill-extrusion-opacity": 0.6,
-      //     },
-      //   },
-      //   labelLayerId,
-      // );
+    //   map.current!.addLayer({
+    //     id: "cautionArea1",
+    //     type: "fill",
+    //     source: "cautionAreaSourc1",
+    //     layout: {},
+    //     paint: {
+    //       "fill-color": colorSet.threat,
+    //       "fill-opacity": 0.3,
+    //     },
+    //   });
 
-      // // Add a symbol layer
-      // // map.current!.addLayer({
-      // //   id: "points",
-      // //   type: "symbol",
-      // //   source: "points",
-      // //   layout: {
-      // //     "icon-image": "custom-marker",
-      // //     // get the title name from the source's "title" property
-      // //     "text-field": ["get", "title"],
-      // //     "text-font": ["Pretendard"],
-      // //     "text-offset": [0, 1.25],
-      // //     "text-anchor": "top",
-      // //   },
-      // // });
-
-      map.current!.addSource(
-        "cautionAreaSourc1",
-        // @ts-ignore
-        createGeoJSONCircle([126.8475, 35.2295], 0.2),
-      );
-      map.current!.addSource(
-        "cautionAreaSourc2",
-        // @ts-ignore
-        createGeoJSONCircle([126.8432, 35.2333], 0.2),
-      );
-
-      map.current!.addLayer({
-        id: "cautionArea1",
-        type: "fill",
-        source: "cautionAreaSourc1",
-        layout: {},
-        paint: {
-          "fill-color": colorSet.threat,
-          "fill-opacity": 0.3,
-        },
-      });
-
-      map.current!.addLayer({
-        id: "cautionArea2",
-        type: "fill",
-        source: "cautionAreaSourc2",
-        layout: {},
-        paint: {
-          "fill-color": colorSet.caution,
-          "fill-opacity": 0.3,
-        },
-      });
-    });
-  }, [lat, lng, zoom]);
+    //   map.current!.addLayer({
+    //     id: "cautionArea2",
+    //     type: "fill",
+    //     source: "cautionAreaSourc2",
+    //     layout: {},
+    //     paint: {
+    //       "fill-color": colorSet.caution,
+    //       "fill-opacity": 0.3,
+    //     },
+    //   });
+    // });
+  }, []);
 
   const moveLocation = (longitude: number, latitude: number) => {
     if (map.current) {

@@ -2,7 +2,11 @@ import Safety from "src/types/safety";
 import Threat from "src/types/threat";
 
 export const classifySafety = (threat: Threat): Safety => {
-  return threat.kind === "칼" ? Safety.THREAT : Safety.CAUTION;
+  return threat.kind === "칼"
+    ? Safety.THREAT
+    : threat.kind === "person"
+    ? Safety.SAFE
+    : Safety.CAUTION;
 };
 
 const safetyOrder = [Safety.NONE, Safety.SAFE, Safety.CAUTION, Safety.THREAT];

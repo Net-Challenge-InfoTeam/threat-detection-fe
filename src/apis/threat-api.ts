@@ -25,7 +25,7 @@ export const getNearbyThreats = async ({
   const [, { latitude, longitude, radius }] = queryKey;
 
   const { data } = await apiGetter<ThreatResponse[]>(
-    `/threat/nearby?location=[${latitude}, ${longitude}]&radius=${radius}`,
+    `/threat/nearby?location=[${longitude}, ${latitude}]&radius=${radius}`,
   );
 
   return data.map((threatResponse) => threatResponseToThreat(threatResponse));
@@ -42,7 +42,7 @@ export const postReport = async (props: {
   const formData = new FormData();
 
   // Create a new file with the modified name
-  const fileName = `${latitude},${longitude}_${capturedAt.toISOString()}`;
+  const fileName = `(${longitude},${latitude})_${capturedAt.toISOString()}`;
   const modifiedFile = new File([image], fileName, { type: image.type });
 
   formData.append("image", modifiedFile);

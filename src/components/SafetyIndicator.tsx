@@ -36,6 +36,8 @@ const WrapperButton = styled(Button)<{
 
 const SafetyIndicator = ({ safety }: SafetyIndicatorProps) => {
   const text = (() => {
+    console.log(safety);
+
     switch (safety) {
       case Safety.SAFE:
         return "근처가 안전합니다!";
