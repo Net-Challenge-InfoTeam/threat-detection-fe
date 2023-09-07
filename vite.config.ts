@@ -1,6 +1,5 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import checker from "vite-plugin-checker";
 import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -25,19 +24,6 @@ export default defineConfig({
   plugins: [
     react(),
     tsconfigPaths(),
-    checker({
-      typescript: true,
-      eslint: {
-        lintCommand: "eslint src/",
-        dev: {
-          logLevel: ["warning"],
-        },
-      },
-      enableBuild: false,
-      overlay: {
-        initialIsOpen: false,
-      },
-    }),
     svgr(),
     VitePWA({
       registerType: "autoUpdate",

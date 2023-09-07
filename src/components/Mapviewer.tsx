@@ -84,8 +84,8 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
 
       new mapboxgl.Marker(element)
         .setLngLat({
-          lon: location.coords.longitude,
-          lat: location.coords.latitude,
+          lon: 126.84139105100095,
+          lat: 35.22785611754457,
         })
         .addTo(map.current!);
     };

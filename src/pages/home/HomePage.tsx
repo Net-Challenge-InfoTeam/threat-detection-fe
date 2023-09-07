@@ -17,9 +17,23 @@ const HomePage = ({}: HomePageProps) => {
   const [safety, setSafety] = useState<Safety>(Safety.SAFE);
   const mapViewerRef = useRef<HTMLDivElement>(null);
 
-  const { data } = useQuery([QueryKeys.GET_ALL_THREATS], getAllThreats, {
+  const { data: none } = useQuery([QueryKeys.GET_ALL_THREATS], getAllThreats, {
     refetchInterval: 5000,
   });
+
+  const data = [
+    {
+      id: 1,
+      location: {
+        longitude: 126.84096217263814,
+        latitude: 35.228096665528106,
+      },
+      kind: "칼",
+      count: 3,
+      acc: [0.5, 0.6, 0.7],
+      detectedAt: new Date("2023-09-01T14:58:58.000Z"),
+    },
+  ];
 
   useEffect(() => {
     if (!data) return;
@@ -48,7 +62,7 @@ const HomePage = ({}: HomePageProps) => {
       backgroundColor={"#F5F5F5"}
     >
       {/* MAPBOX HERE */}
-      {data && <Mapviewer threats={data} ref={mapViewerRef} />}
+      {<Mapviewer threats={data} ref={mapViewerRef} />}
       {safety === Safety.THREAT && (
         <>
           <ThreatBlurLeft />
