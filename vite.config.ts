@@ -16,7 +16,7 @@ export default defineConfig({
     proxy: {
       //CORS 방지를 위한 프록시 설정입니다.
       "/local": {
-        target: "http://10.32.103.147:3000", //실제 api 도메인을 넣어줍니다.
+        target: "https://61.252.59.44", //실제 api 도메인을 넣어줍니다.
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/local/, ""), //target url을 교체합니다.
       },
