@@ -42,9 +42,13 @@ const HomePage = ({}: HomePageProps) => {
   const [safety, setSafety] = useState<Safety>(Safety.SAFE);
   const mapViewerRef = useRef<HTMLDivElement>(null);
 
-  const { data } = useQuery([QueryKeys.GET_ALL_THREATS], getAllThreats, {
-    refetchInterval: 5000,
-  });
+  const { data: notNow } = useQuery(
+    [QueryKeys.GET_ALL_THREATS],
+    getAllThreats,
+    {
+      refetchInterval: 5000,
+    },
+  );
 
   useEffect(() => {
     if (!data) return;
