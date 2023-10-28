@@ -1,3 +1,4 @@
+import { Provider } from "jotai";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -22,7 +23,11 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Provider>
+      <RouterProvider router={router} />
+    </Provider>
+  );
 }
 
 export default App;

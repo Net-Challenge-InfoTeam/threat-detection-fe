@@ -11,7 +11,9 @@ import {
 } from "react";
 import { createRoot } from "react-dom/client";
 import Icons from "src/assets/Icons";
-import { locationAtom } from "src/store";
+import { geoJsonPath, locationAtom, MapboxAccessToken } from "src/store";
+import { clickedLocationInfo } from "src/store";
+import colorSet from "src/styles/colorSet";
 import Threat from "src/types/threat";
 import styled from "styled-components";
 
@@ -22,8 +24,7 @@ import MarkerGenerator, {
 import MonitorSidePanel from "./MonitorSidePanel";
 import ThreatBottomSheet from "./ThreatBottomSheet";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiY2Fyb25hMjEiLCJhIjoiY2xsYzNrcmF5MGJyZjNxcW1mNWZsZW9ndSJ9.J4ziCDlgJHdTO-oc6QifMw";
+mapboxgl.accessToken = MapboxAccessToken;
 
 const sourcdIds = [
   "threatSource0",
@@ -76,7 +77,7 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
   };
 
   useEffect(() => {
-    console.log("mark current location");
+    // mark current location
     const markCurrentLocation = () => {
       if (!location) return;
 
@@ -93,6 +94,24 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
 
     markCurrentLocation();
   }, [location]);
+
+  const [clickedLocationInfoAtom, setClickedLocationInfoAtom] =
+    useAtom(clickedLocationInfo);
+
+  useEffect(() => {
+    // mark other location
+    if (!clickedLocationInfoAtom) return;
+
+    const element = document.createElement("div");
+    createRoot(element).render(<Icons.OtherLocation />);
+
+    const otherMarker = new mapboxgl.Marker(element)
+      .setLngLat({
+        lon: clickedLocationInfoAtom.lngLat.lng,
+        lat: clickedLocationInfoAtom.lngLat.lat,
+      })
+      .addTo(map.current!);
+  }, [clickedLocationInfoAtom]);
 
   useEffect(() => {
     // currentMarkers.filter((marker) => {
@@ -254,9 +273,61 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
     }
   };
 
+  useEffect(() => {
+    const handleClick = (e: mapboxgl.MapMouseEvent) => {
+      setClickedLocationInfoAtom(e);
+    };
+
+    map.current?.on("click", handleClick);
+
+    return () => {
+      map.current?.off("click", handleClick);
+    };
+  });
+
   useImperativeHandle(ref, () => ({
     moveToCurrentLocation,
   }));
+
+  // set geoJson to map
+  const [geoJsonPathAtom] = useAtom(geoJsonPath);
+
+  useEffect(() => {
+    if (!map.current) return;
+    if (!geoJsonPathAtom) return;
+
+    if (map.current.getSource("route")) {
+      map.current.getSource("route");
+    } else {
+      const geojson = {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "LineString",
+          coordinates: geoJsonPathAtom,
+        },
+      };
+      map.current.addLayer({
+        id: "route",
+        type: "line",
+        source: {
+          type: "geojson",
+
+          // 이건 타입매칭이 안 되는데 강제적으로 넣어 주니까 잘된다!
+          // @ts-ignore
+          data: geojson,
+        },
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": colorSet.primary,
+          "line-width": 8,
+        },
+      });
+    }
+  }, [geoJsonPathAtom]);
 
   return (
     <>
