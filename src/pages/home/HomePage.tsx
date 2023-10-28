@@ -2,53 +2,36 @@ import { Area, Flex } from "@dohyun-ko/react-atoms";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { getAllThreats } from "src/apis/threat-api";
-import CameraButton from "src/components/CameraButton";
 import Mapviewer from "src/components/Mapviewer";
-import SafetyIndicator from "src/components/SafetyIndicator";
-import VectorButton from "src/components/VectorButton";
-import QueryKeys from "src/types/queryKeys";
+import threatData from "src/mock/threat-data";
 import Safety from "src/types/safety";
 import compareSafety, { classifySafety } from "src/utils/compare-safety";
 import styled from "styled-components";
 
-interface HomePageProps {}
+import Home from "./viewState/Home";
+import NavAfter from "./viewState/NavAfter";
+import NavBefore from "./viewState/NavBefore";
 
-const data = [
-  {
-    id: 1,
-    location: {
-      longitude: 126.84096217263814,
-      latitude: 35.228096665528106,
-    },
-    kind: "칼",
-    count: 3,
-    acc: [0.5, 0.6, 0.7],
-    detectedAt: new Date("2023-09-01T14:58:58.000Z"),
-  },
-  {
-    id: 1,
-    location: {
-      longitude: 126.84157217263814,
-      latitude: 35.2283966655281,
-    },
-    kind: "담배",
-    count: 3,
-    acc: [0.5, 0.6, 0.7],
-    detectedAt: new Date("2023-09-01T14:58:58.000Z"),
-  },
-];
+enum ViewState {
+  HOME,
+  NAVIGATION_BEFORE,
+  NAVIGATION_AFTER,
+}
 
-const HomePage = ({}: HomePageProps) => {
+const HomePage = () => {
   const [safety, setSafety] = useState<Safety>(Safety.SAFE);
   const mapViewerRef = useRef<HTMLDivElement>(null);
+  const [viewState, setViewState] = useState<ViewState>(ViewState.HOME);
 
-  const { data: notNow } = useQuery(
-    [QueryKeys.GET_ALL_THREATS],
-    getAllThreats,
-    {
-      refetchInterval: 5000,
-    },
-  );
+  // const { data: notNow } = useQuery(
+  //   [QueryKeys.GET_ALL_THREATS],
+  //   getAllThreats,
+  //   {
+  //     refetchInterval: 5000,
+  //   },
+  // );
+
+  const data = threatData;
 
   useEffect(() => {
     if (!data) return;
@@ -61,8 +44,7 @@ const HomePage = ({}: HomePageProps) => {
     setSafety(value);
   }, [data]);
 
-  const handleVectorButtonClick = () => {
-    console.log("handle vector button click");
+  const goToMyLocation = () => {
     // @ts-ignore
     mapViewerRef.current?.moveToCurrentLocation();
   };
@@ -71,78 +53,52 @@ const HomePage = ({}: HomePageProps) => {
     <Area
       style={{
         height: "100vh",
-        position: "relative",
+        position: "absolute",
         overflow: "hidden",
+        top: "0",
+        left: "0",
       }}
-      backgroundColor={"#F5F5F5"}
     >
-      {/* MAPBOX HERE */}
+      {/* render map, threat state */}
       {data && <Mapviewer threats={data} ref={mapViewerRef} />}
-      {safety === Safety.THREAT && (
-        <>
-          <ThreatBlurLeft />
-          <ThreatBlurRight />
-        </>
+
+      {/* home */}
+      {viewState === ViewState.HOME && (
+        <Home
+          safety={safety}
+          handleMyLocationClick={goToMyLocation}
+          goToNavigation={() => {
+            setViewState(ViewState.NAVIGATION_BEFORE);
+            goToMyLocation();
+          }}
+        />
       )}
 
-      <SafetyIndicatorWrapper>
-        <SafetyIndicator safety={safety} />
-      </SafetyIndicatorWrapper>
+      {/* navigation_before */}
+      {viewState === ViewState.NAVIGATION_BEFORE && (
+        <NavBefore
+          goBackHome={() => {
+            setViewState(ViewState.HOME);
+          }}
+          goNavAfter={() => {
+            setViewState(ViewState.NAVIGATION_AFTER);
+          }}
+        />
+      )}
 
-      <ActionButtonsWrapper>
-        <VectorButton safety={safety} onClick={handleVectorButtonClick} />
-
-        {location && <CameraButton safety={safety} />}
-      </ActionButtonsWrapper>
+      {/* navigation_after */}
+      {viewState === ViewState.NAVIGATION_AFTER && (
+        <NavAfter
+          goBackHome={() => {
+            setViewState(ViewState.HOME);
+          }}
+          goNavBefore={() => {
+            setViewState(ViewState.NAVIGATION_BEFORE);
+          }}
+        />
+      )}
     </Area>
   );
 };
-
-const SafetyIndicatorWrapper = styled(Flex)`
-  position: absolute;
-  top: 15px;
-  left: 15px;
-
-  z-index: 1;
-`;
-
-const ActionButtonsWrapper = styled(Flex)`
-  position: absolute;
-  bottom: 44px;
-  left: calc(50% - 88px);
-  gap: 16px;
-
-  z-index: 1;
-`;
-
-const ThreatBlurLeft = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: calc(50% - 88px);
-  height: 100vh;
-  background: linear-gradient(
-    90deg,
-    rgba(217, 77, 33, 15%) 0%,
-    rgba(217, 77, 33, 0) 100%
-  );
-
-  z-index: 1;
-`;
-
-const ThreatBlurRight = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: calc(50% - 88px);
-  height: 100vh;
-  background: linear-gradient(
-    270deg,
-    rgba(217, 77, 33, 15%) 0%,
-    rgba(217, 77, 33, 0) 100%
-  );
-
-  z-index: 1;
-`;
 
 export default HomePage;
