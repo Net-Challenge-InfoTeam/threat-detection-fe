@@ -21,6 +21,7 @@ import MarkerGenerator, {
   CautionMarker,
   ThreatMarker,
 } from "./MarkerGenerator";
+import MonitorSidePanel from "./MonitorSidePanel";
 import ThreatBottomSheet from "./ThreatBottomSheet";
 
 mapboxgl.accessToken = MapboxAccessToken;
@@ -332,11 +333,18 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
     <>
       <MapFrame ref={mapContainer} />
 
-      {selectedThreat && (
-        <ThreatBottomSheet
-          threat={selectedThreat}
-          open={bottomSheetOpen}
-          onDismiss={() => setBottomSheetOpen(false)}
+      {window.innerWidth < 768 ? (
+        selectedThreat && (
+          <ThreatBottomSheet
+            threat={selectedThreat}
+            open={bottomSheetOpen}
+            onDismiss={() => setBottomSheetOpen(false)}
+          />
+        )
+      ) : (
+        <MonitorSidePanel
+          selectedThreat={selectedThreat}
+          setSelectedThreat={setSelectedThreat}
         />
       )}
     </>

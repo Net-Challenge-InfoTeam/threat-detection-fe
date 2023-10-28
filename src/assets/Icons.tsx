@@ -290,6 +290,35 @@ const Group = ({
   );
 };
 
+const RightArrow = ({ size = "20px", color = "#252525" }: IconsProps) => {
+  return (
+    <svg
+      height={size}
+      viewBox="0 0 19 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12.3503 16L6.65028 10L12.3503 4" stroke={color} />
+    </svg>
+  );
+};
+
+const Check = ({ size = "20px", color = "white" }: IconsProps) => {
+  return (
+    <svg
+      width={size}
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.74968 12.1502L3.59968 9.0002L2.54968 10.0502L6.74968 14.2502L15.7497 5.2502L14.6997 4.2002L6.74968 12.1502Z"
+        fill={color}
+      />
+    </svg>
+  );
+};
+
 Icons.Safe = Safe;
 Icons.Caution = Caution;
 Icons.Threat = Threat;
@@ -304,5 +333,6 @@ Icons.CloseThick = CloseThick;
 Icons.Car = Car;
 Icons.ArrowDown = ArrowDown;
 Icons.Group = Group;
+Icons.RightArrow = RightArrow;
 
 export default Icons;

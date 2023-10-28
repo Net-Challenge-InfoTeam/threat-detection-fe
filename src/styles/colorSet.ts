@@ -16,6 +16,8 @@ const colorSet = {
   deselected: "#ECECEC",
 
   secondaryText: "#888888",
+
+  police: "#0076A9",
 };
 
 export default colorSet;
