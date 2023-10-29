@@ -1,11 +1,12 @@
 import Icons from "src/assets/Icons";
 import colorSet from "src/styles/colorSet";
 
-interface MarkderProps {
+interface MarkerProps {
   onClick?: () => void;
+  icon?: React.ReactNode;
 }
 
-interface MarkerGeneratorProps extends MarkderProps {
+interface MarkerGeneratorProps extends MarkerProps {
   color?: string;
   icon?: React.ReactNode;
 }
@@ -56,21 +57,21 @@ const MarkerGenerator = ({
 
 export default MarkerGenerator;
 
-export const CautionMarker = ({ onClick }: MarkderProps) => {
+export const CautionMarker = ({ onClick, icon }: MarkerProps) => {
   return (
     <MarkerGenerator
       color={colorSet.caution}
-      icon={<Icons.Caution size="20px" color={colorSet.white} />}
+      icon={icon ?? <Icons.Caution size="20px" color={colorSet.white} />}
       onClick={onClick}
     />
   );
 };
 
-export const ThreatMarker = ({ onClick }: MarkderProps) => {
+export const ThreatMarker = ({ onClick, icon }: MarkerProps) => {
   return (
     <MarkerGenerator
       color={colorSet.threat}
-      icon={<Icons.Threat size="20px" color={colorSet.white} />}
+      icon={icon ?? <Icons.Threat size="20px" color={colorSet.white} />}
       onClick={onClick}
     />
   );

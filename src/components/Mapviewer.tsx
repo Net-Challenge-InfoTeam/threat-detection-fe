@@ -154,6 +154,27 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
         case "담배":
           createRoot(element).render(
             <CautionMarker
+              icon={<Icons.Smoking size="20px" />}
+              onClick={() => {
+                markerClicked(marker);
+              }}
+            />,
+          );
+          break;
+        case "싸움":
+          createRoot(element).render(
+            <CautionMarker
+              icon={<Icons.Fight size="20px" />}
+              onClick={() => {
+                markerClicked(marker);
+              }}
+            />,
+          );
+          break;
+        case "인구 밀집":
+          createRoot(element).render(
+            <ThreatMarker
+              icon={<Icons.Group size="20px" color="white" />}
               onClick={() => {
                 markerClicked(marker);
               }}
@@ -163,6 +184,7 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
         case "칼":
           createRoot(element).render(
             <ThreatMarker
+              icon={<Icons.Knife size="20px" color="white" />}
               onClick={() => {
                 markerClicked(marker);
               }}
