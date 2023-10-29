@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { getAllThreats } from "src/apis/threat-api";
 import Mapviewer from "src/components/Mapviewer";
-import threatData from "src/mock/threat-data";
 import QueryKeys from "src/types/queryKeys";
 import Safety from "src/types/safety";
 import compareSafety, { classifySafety } from "src/utils/compare-safety";
@@ -31,7 +30,8 @@ const HomePage = () => {
     },
   );
 
-  const data = threatData;
+  // const data = threatData;
+  const data = notNow;
 
   useEffect(() => {
     if (!data) return;

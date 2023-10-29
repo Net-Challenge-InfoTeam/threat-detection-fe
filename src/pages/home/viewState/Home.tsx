@@ -1,4 +1,4 @@
-import { Flex } from "@dohyun-ko/react-atoms";
+import { Button, Flex } from "@dohyun-ko/react-atoms";
 import Icons from "src/assets/Icons";
 import CameraButton from "src/components/CameraButton";
 import SafetyIndicator from "src/components/SafetyIndicator";
@@ -43,6 +43,22 @@ const Home = ({ safety, handleMyLocationClick, goToNavigation }: HomeProps) => {
           icon={<Icons.Navigation color={getIconColor(safety)} />}
         />
       </ActionButtonsWrapper>
+
+      <Button
+        style={{
+          height: "100px",
+          width: "100px",
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+        }}
+        onClick={() => {
+          setTimeout(() => {
+            // @ts-ignore
+            window.Threat.postMessage("message");
+          }, 3000); // Wait for 3 seconds (3000 milliseconds)
+        }}
+      ></Button>
     </>
   );
 };
