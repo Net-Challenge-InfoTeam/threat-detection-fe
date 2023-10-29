@@ -25,19 +25,19 @@ export default defineConfig({
   plugins: [
     react(),
     tsconfigPaths(),
-    checker({
-      typescript: true,
-      eslint: {
-        lintCommand: "eslint src/",
-        dev: {
-          logLevel: ["warning"],
-        },
-      },
-      enableBuild: false,
-      overlay: {
-        initialIsOpen: false,
-      },
-    }),
+    // checker({
+    //   typescript: true,
+    //   eslint: {
+    //     lintCommand: "eslint src/",
+    //     dev: {
+    //       logLevel: ["warning"],
+    //     },
+    //   },
+    //   enableBuild: false,
+    //   overlay: {
+    //     initialIsOpen: false,
+    //   },
+    // }),
     svgr(),
     VitePWA({
       registerType: "autoUpdate",
