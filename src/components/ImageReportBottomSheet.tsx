@@ -48,6 +48,10 @@ const ImageReportBottomSheet = ({
 
       onDismiss && onDismiss();
     },
+    onError: (error) => {
+      toast.error("제출에 실패했습니다.");
+      console.error(JSON.stringify(error));
+    },
   });
 
   useEffect(() => {
@@ -180,6 +184,7 @@ const ImageReportBottomSheet = ({
               style={{
                 padding: "7px 16px",
               }}
+              type={"button"}
               onClick={handleSubmit}
             >
               <Text font={Fonts.Medium} color={colorSet.white}>

@@ -40,9 +40,10 @@ export const postReport = async (props: {
   const { latitude, longitude, capturedAt, image } = props;
 
   const formData = new FormData();
+  const fileExtension = image.name.split(".").pop();
 
   // Create a new file with the modified name
-  const fileName = `(${longitude},${latitude})_${capturedAt.toISOString()}`;
+  const fileName = `(${longitude},${latitude})_${capturedAt.toISOString()}.${fileExtension}`;
   const modifiedFile = new File([image], fileName, { type: image.type });
 
   formData.append("image", modifiedFile);

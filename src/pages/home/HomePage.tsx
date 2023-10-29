@@ -1,12 +1,12 @@
-import { Area, Flex } from "@dohyun-ko/react-atoms";
+import { Area } from "@dohyun-ko/react-atoms";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { getAllThreats } from "src/apis/threat-api";
 import Mapviewer from "src/components/Mapviewer";
 import threatData from "src/mock/threat-data";
+import QueryKeys from "src/types/queryKeys";
 import Safety from "src/types/safety";
 import compareSafety, { classifySafety } from "src/utils/compare-safety";
-import styled from "styled-components";
 
 import Home from "./viewState/Home";
 import NavAfter from "./viewState/NavAfter";
@@ -23,13 +23,13 @@ const HomePage = () => {
   const mapViewerRef = useRef<HTMLDivElement>(null);
   const [viewState, setViewState] = useState<ViewState>(ViewState.HOME);
 
-  // const { data: notNow } = useQuery(
-  //   [QueryKeys.GET_ALL_THREATS],
-  //   getAllThreats,
-  //   {
-  //     refetchInterval: 5000,
-  //   },
-  // );
+  const { data: notNow } = useQuery(
+    [QueryKeys.GET_ALL_THREATS],
+    getAllThreats,
+    {
+      // refetchInterval: 5000,
+    },
+  );
 
   const data = threatData;
 
