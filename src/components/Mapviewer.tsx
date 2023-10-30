@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { createRoot } from "react-dom/client";
+import { useLocation } from "react-router-dom";
 import Icons from "src/assets/Icons";
 import {
   MapboxAccessToken,
@@ -67,6 +68,8 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
 
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
+
+  const locationObject = useLocation();
 
   const [currentMarkers, setCurrentMarkers] = useState<
     {
@@ -359,7 +362,7 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
     <>
       <MapFrame ref={mapContainer} />
 
-      {window.innerWidth < 500 ? (
+      {locationObject.pathname !== "/monitor" ? (
         selectedThreat && (
           <ThreatBottomSheet
             threat={selectedThreat}
