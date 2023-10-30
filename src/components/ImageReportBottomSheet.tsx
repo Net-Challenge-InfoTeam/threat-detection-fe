@@ -99,7 +99,7 @@ const ImageReportBottomSheet = ({
 
           <Flex justifyContent={"space-between"}>
             <Text font={Fonts.Bold} size={"20px"}>
-              워험도
+              위험도
             </Text>
 
             <Text

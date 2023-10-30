@@ -9,7 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useState } from "react";
 import { getAddress } from "src/apis/geocoding-api";
-import ExampleImage from "src/assets/example-img.png";
+import ExampleImage from "src/assets/example-img.jpg";
 import Icons from "src/assets/Icons";
 import MonitorCctv from "src/assets/monitor-cctv.svg";
 import MonitorPolice from "src/assets/monitor-police.svg";
@@ -95,7 +95,7 @@ const SidePanelThreatInfo = ({ threat, onBack }: SidePanelThreatInfoProps) => {
     getAddress,
   );
 
-  const isThreat = threat.kind === "칼";
+  const isThreat = threat.kind === "knife";
 
   const [isPoliceCalled, setIsPoliceCalled] = useState<boolean>(false);
 

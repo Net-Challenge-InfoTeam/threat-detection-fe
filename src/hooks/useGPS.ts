@@ -9,6 +9,19 @@ const useGPS = () => {
   useEffect(() => {
     const watchId = navigator.geolocation.getCurrentPosition(
       (position) => {
+        const already = {
+          coords: {
+            accuracy: 11.0,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            latitude: 35.2277932,
+            longitude: 126.8406592,
+            speed: null,
+          },
+          timestamp: 1698580728366,
+        };
+
         console.log("watchId", position);
         setLocation(position);
       },

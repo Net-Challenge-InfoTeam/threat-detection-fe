@@ -11,8 +11,12 @@ import {
 } from "react";
 import { createRoot } from "react-dom/client";
 import Icons from "src/assets/Icons";
-import { geoJsonPath, locationAtom, MapboxAccessToken } from "src/store";
-import { clickedLocationInfo } from "src/store";
+import {
+  MapboxAccessToken,
+  clickedLocationInfo,
+  geoJsonPath,
+  locationAtom,
+} from "src/store";
 import colorSet from "src/styles/colorSet";
 import Threat from "src/types/threat";
 import styled from "styled-components";
@@ -181,7 +185,7 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
             />,
           );
           break;
-        case "칼":
+        case "knife":
           createRoot(element).render(
             <ThreatMarker
               icon={<Icons.Knife size="20px" color="white" />}
@@ -355,7 +359,7 @@ const Mapviewer = forwardRef(({ threats }: MapViewerProps, ref) => {
     <>
       <MapFrame ref={mapContainer} />
 
-      {window.innerWidth < 768 ? (
+      {window.innerWidth < 500 ? (
         selectedThreat && (
           <ThreatBottomSheet
             threat={selectedThreat}

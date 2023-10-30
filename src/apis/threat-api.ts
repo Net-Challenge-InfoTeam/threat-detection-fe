@@ -5,7 +5,7 @@ import { apiGetter, apiPoster } from "./interceptor";
 export const getAllThreats = async ({ queryKey }: { queryKey: [string] }) => {
   const [,] = queryKey;
 
-  const { data } = await apiGetter<ThreatResponse[]>(`/threat/get`);
+  const { data } = await apiGetter<ThreatResponse[]>(`/threat/get?take=10000`);
 
   return data.map((threatResponse) => threatResponseToThreat(threatResponse));
 };
